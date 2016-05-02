@@ -172,10 +172,11 @@ secret, visit:
             except Exception as e:
                 print("Unexpected error: %s" % e)
 
-        print("Adding %d tracks to playlist '%s'... " % (len(track_ids), playlist_id), end='')
-        sys.stdout.flush()
-        sp.user_playlist_add_tracks(args.username, playlist_id, track_ids)
-        print("Done.")
+        if track_ids:
+            print("Adding %d tracks to playlist '%s'... " % (len(track_ids), playlist_id), end='')
+            sys.stdout.flush()
+            sp.user_playlist_add_tracks(args.username, playlist_id, track_ids)
+            print("Done.")
 
 
 
