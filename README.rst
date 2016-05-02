@@ -55,11 +55,11 @@ Spotify playlist for those songs.
 Options
 -------
 
-There are a number of options you can also pass to ``lightsout``::
+There are a number of options you can also pass to ``lightsout``:
 
 * You can specify a station other than ``doublej`` using the ``-s`` option::
 
-  $ lightsout -u <your Spotify username> -s triplej
+    $ lightsout -u <your Spotify username> -s triplej
 
   See ``--help`` for the list of available channels
 
@@ -81,7 +81,7 @@ There are a number of options you can also pass to ``lightsout``::
 
     $ lightsout -u <your Spotify username> -p 7wkac9khk9ssablyH9kRsC
 
-  You can find the list of existing playlists by specifying ``LIST`` as the playlist:
+  You can find the list of existing playlists by specifying ``LIST`` as the playlist::
 
     $ lightsout -u <your Spotify username> -p LIST
 
@@ -91,13 +91,21 @@ Extending Lights Out
 Lights out currently has support for the following stations:
 
 * ABC Australia
+
   * Double J
+
   * Triple J
+
   * Unearthed
+
   * ABC Classic
+
   * ABC Classic 2
+
   * ABC Jazz
+
   * ABC Country
+
   * ABC Extra
 
 To add a new station station, you need to add a single function to
