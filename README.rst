@@ -77,13 +77,26 @@ There are a number of options you can also pass to ``lightsout``:
 
   would generate a 4 hour playlist.
 
-* You can specify that you want to append to an existing playlist using the ``-p`` option::
+* You can specify that you want to append to an existing playlist using the
+  ``-p`` option::
 
     $ lightsout -u <your Spotify username> -p 7wkac9khk9ssablyH9kRsC
 
   You can find the list of existing playlists by specifying ``LIST`` as the playlist::
 
     $ lightsout -u <your Spotify username> -p LIST
+
+* If you want to maintain a perpetual playlist (a playlist that is replaced,
+  rather than appended to), you can specify that playlist using the ``-P``
+  option::
+
+    $ lightsout -u <your Spotify username> -p 7wkac9khk9ssablyH9kRsC
+
+  If you want to update a perpetual playlist, but *not* append to an existing
+  playlist, you can specify ``-p NONE`` in addition to ``-P``::
+
+    $ lightsout -u <your Spotify username> -p NONE -P 7wkac9khk9ssablyH9kRsC
+
 
 Extending Lights Out
 --------------------

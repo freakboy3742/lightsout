@@ -26,8 +26,48 @@ class AWST(tzinfo):
         return timedelta(hours=8)
 
 
+def get_creds():
+    try:
+        creds = {}
+        with open(os.path.expanduser('~/.lightsoutrc')) as source_file:
+            exec(source_file.read(), creds, creds)
+    except Exception as e:
+        print("""
+Couldn't find your Spotify credentials.
+
+You need to create a file called ".lightsoutrc" in your home directory. This
+file must have the following content:
+
+    SPOTIFY_CLIENT_ID='<YOUR CLIENT ID>'
+    SPOTIFY_CLIENT_SECRET='<YOUR CLIENT SECRET>'
+
+Substituting your own ID and secret as appropriate. To get a client ID and
+secret, visit:
+
+    https://developer.spotify.com/my-applications/#!/applications/create
+
+        """)
+        sys.exit(1)
+
+    return creds
+
+
 def date_time(input):
     return datetime.strptime(input, '%Y-%m-%dT%H:%M:%S%z')
+
+
+def add_to_playlist(sp, username, track_ids, playlist_id, perpetual_id):
+    if playlist_id != 'NONE':
+        print("Adding %d tracks to playlist '%s'... " % (len(track_ids), playlist_id), end='')
+        sys.stdout.flush()
+        sp.user_playlist_add_tracks(username, playlist_id, track_ids)
+        print("Done.")
+    if perpetual_id != 'NONE':
+        print("Adding %d tracks to perpetual playlist... " % len(track_ids), end='')
+        sys.stdout.flush()
+        sp.user_playlist_add_tracks(username, perpetual_id, track_ids)
+        print("Done.")
+    print()
 
 
 def main():
@@ -59,6 +99,10 @@ def main():
         default="NEW"
     )
     parser.add_argument(
+        '-P', '--perpetual',
+        help='The ID of the perpetual playlist to update.',
+    )
+    parser.add_argument(
         '-n', '--name',
         help='The name for your Spotify playlist',
     )
@@ -70,27 +114,7 @@ def main():
         default='doublej'
     )
 
-    try:
-        creds = {}
-        with open(os.path.expanduser('~/.lightsoutrc')) as source_file:
-            exec(source_file.read(), creds, creds)
-    except Exception as e:
-        print("""
-Couldn't find your Spotify credentials.
-
-You need to create a file called ".lightsoutrc" in your home directory. This
-file must have the following content:
-
-    SPOTIFY_CLIENT_ID='<YOUR CLIENT ID>'
-    SPOTIFY_CLIENT_SECRET='<YOUR CLIENT SECRET>'
-
-Substituting your own ID and secret as appropriate. To get a client ID and
-secret, visit:
-
-    https://developer.spotify.com/my-applications/#!/applications/create
-
-        """)
-        sys.exit(1)
+    creds = get_creds()
 
     args = parser.parse_args()
 
@@ -141,6 +165,13 @@ secret, visit:
         else:
             playlist_id = args.playlist
 
+        if args.perpetual:
+            print("Flushing perpetual playlist... ", end='')
+            sys.stdout.flush()
+            perpetual_id = args.perpetual
+            sp.user_playlist_replace_tracks(args.username, perpetual_id, [])
+            print("Done.")
+
         track_ids = []
         for song in songs:
             try:
@@ -163,21 +194,13 @@ secret, visit:
 
                 # Every 10 tracks found, flush to the playlist.
                 if len(track_ids) == 10:
-                    print("Adding %d tracks to playlist '%s'... " % (len(track_ids), playlist_id), end='')
-                    sys.stdout.flush()
-                    sp.user_playlist_add_tracks(args.username, playlist_id, track_ids)
-                    print("Done.")
-                    print()
+                    add_to_playlist(sp, args.username, track_ids, playlist_id, perpetual_id)
                     track_ids = []
             except Exception as e:
                 print("Unexpected error: %s" % e)
 
         if track_ids:
-            print("Adding %d tracks to playlist '%s'... " % (len(track_ids), playlist_id), end='')
-            sys.stdout.flush()
-            sp.user_playlist_add_tracks(args.username, playlist_id, track_ids)
-            print("Done.")
-
+            add_to_playlist(sp, args.username, track_ids, playlist_id, perpetual_id)
 
 
 if __name__ == '__main__':
