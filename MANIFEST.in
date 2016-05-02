@@ -1,0 +1,5 @@
+include README.rst
+include AUTHORS
+include LICENSE
+recursive-include lightsout *.py
+recursive-include tests *.py
