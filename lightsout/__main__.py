@@ -173,9 +173,10 @@ def main():
             print("Done.")
 
         track_ids = []
-        for song in songs:
+        for i, song in enumerate(songs):
             try:
-                print("Searching for '%(title)s' by '%(artist)s' (from '%(album)s')... " % song, end='')
+                song['index'] = i + 1
+                print("%(index)s: Searching for '%(title)s' by '%(artist)s' (from '%(album)s')... " % song, end='')
                 sys.stdout.flush()
                 result = sp.search("artist:%(artist)s album:%(album)s track:%(title)s" % song, type="track")
                 if result['tracks']['total'] > 0:
