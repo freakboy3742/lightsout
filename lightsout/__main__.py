@@ -62,7 +62,7 @@ def add_to_playlist(sp, username, track_ids, playlist_id, perpetual_id):
         sys.stdout.flush()
         sp.user_playlist_add_tracks(username, playlist_id, track_ids)
         print("Done.")
-    if perpetual_id != 'NONE':
+    if perpetual_id:
         print("Adding %d tracks to perpetual playlist... " % len(track_ids), end='')
         sys.stdout.flush()
         sp.user_playlist_add_tracks(username, perpetual_id, track_ids)
